@@ -7,7 +7,7 @@ import Header from './components/Header/Header';
 import JournalList from './components/JournalList/JournalList';
 import JournalAddButton from './components/JournalAddButton/JournalAddButton';
 import JournalForm from './components/JournalForm/JournalForm';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 const App = () => {
   const [items, setItems] = useState([]);

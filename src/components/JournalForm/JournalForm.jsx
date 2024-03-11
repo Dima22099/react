@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import cn from 'classnames';
 import Button from '../Button/Button';
 import styles from './JournalForm.module.css';
@@ -11,23 +11,28 @@ const INITIAL_STATE = {
 
 const JournalForm = ({ onSubmit }) => {
   const [formValidState, setFormValidState] = useState(INITIAL_STATE);
+  const titleRef = useRef();
+  const dateRef = useRef();
+  const postRef = useRef();
 
-  // useEffect(() => {
-  //   let timeId;
-  //   if (!formValidState.title || !formValidState.post || !formValidState.date) {
-  //     timeId = setTimeout(() => {
-  //       console.log('Очистка состояния');
-  //       setFormValidState(INITIAL_STATE);
-  //     }, 2000);
-  //   }
-  //   return () => {
-  //     clearTimeout(timeId);
-  //   };
-  // });
+  const focusError = (formValidState) => {
+    switch (true) {
+      case !formValidState.title:
+        titleRef.current.focus();
+        break;
+      case !formValidState.date:
+        dateRef.current.focus();
+        break;
+      case !formValidState.post:
+        postRef.current.focus();
+        break;
+    }
+  };
 
   useEffect(() => {
     let timeId;
     if (!formValidState.title || !formValidState.post || !formValidState.date) {
+      focusError(formValidState);
       timeId = setTimeout(() => {
         setFormValidState(INITIAL_STATE);
       }, 1000);
@@ -71,6 +76,7 @@ const JournalForm = ({ onSubmit }) => {
     <form className={styles['jounal-form']} onSubmit={addJournalItem}>
       <div>
         <input
+          ref={titleRef}
           type="text"
           name="title"
           className={cn(styles['input-title'], {
@@ -84,6 +90,7 @@ const JournalForm = ({ onSubmit }) => {
           <span>Дата</span>
         </label>
         <input
+          ref={dateRef}
           type="date"
           name="date"
           id="date"
@@ -102,6 +109,7 @@ const JournalForm = ({ onSubmit }) => {
       </div>
 
       <textarea
+        ref={postRef}
         name="post"
         id=""
         cols="30"
