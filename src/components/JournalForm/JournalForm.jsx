@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import cn from 'classnames';
 import Button from '../Button/Button';
 import styles from './JournalForm.module.css';
+import Input from '../input/input';
 
 const INITIAL_STATE = {
   title: true,
@@ -15,24 +16,23 @@ const JournalForm = ({ onSubmit }) => {
   const dateRef = useRef();
   const postRef = useRef();
 
-  const focusError = (formValidState) => {
-    switch (true) {
-      case !formValidState.title:
-        titleRef.current.focus();
-        break;
-      case !formValidState.date:
-        dateRef.current.focus();
-        break;
-      case !formValidState.post:
-        postRef.current.focus();
-        break;
-    }
-  };
-
+  // const focusError = (formValidState) => {
+  //   switch (true) {
+  //     case !formValidState.title:
+  //       titleRef.current.focus();
+  //       break;
+  //     case !formValidState.date:
+  //       dateRef.current.focus();
+  //       break;
+  //     case !formValidState.post:
+  //       postRef.current.focus();
+  //       break;
+  //   }
+  // };
   useEffect(() => {
     let timeId;
     if (!formValidState.title || !formValidState.post || !formValidState.date) {
-      focusError(formValidState);
+      // focusError(formValidState);
       timeId = setTimeout(() => {
         setFormValidState(INITIAL_STATE);
       }, 1000);
@@ -75,13 +75,12 @@ const JournalForm = ({ onSubmit }) => {
   return (
     <form className={styles['jounal-form']} onSubmit={addJournalItem}>
       <div>
-        <input
+        <Input
           ref={titleRef}
           type="text"
           name="title"
-          className={cn(styles['input-title'], {
-            [styles.invalid]: !formValidState.title
-          })}
+          appearance="title"
+          formValidState={formValidState.title}
         />
       </div>
       <div className={styles['form-row']}>
@@ -89,14 +88,12 @@ const JournalForm = ({ onSubmit }) => {
           <img src="/calendar.svg" alt="Иконка календаря" />
           <span>Дата</span>
         </label>
-        <input
+        <Input
           ref={dateRef}
           type="date"
           name="date"
           id="date"
-          className={cn(styles.input, {
-            [styles.invalid]: !formValidState.date
-          })}
+          formValidState={formValidState.date}
         />
       </div>
 
@@ -105,7 +102,7 @@ const JournalForm = ({ onSubmit }) => {
           <img src="/folder.svg" alt="Иконка папка" />
           <span>Метки</span>
         </label>
-        <input type="text" name="tag" id="tag" className={styles.input} />
+        <Input type="text" name="tag" id="tag" />
       </div>
 
       <textarea
