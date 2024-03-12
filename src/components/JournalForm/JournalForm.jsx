@@ -76,11 +76,11 @@ const JournalForm = ({ onSubmit }) => {
     <form className={styles['jounal-form']} onSubmit={addJournalItem}>
       <div>
         <Input
+          formValidState={formValidState.title}
           ref={titleRef}
           type="text"
           name="title"
           appearance="title"
-          formValidState={formValidState.title}
         />
       </div>
       <div className={styles['form-row']}>
