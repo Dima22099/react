@@ -1,8 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import {
+  useContext, useEffect, useRef, useState
+} from 'react';
 import cn from 'classnames';
 import Button from '../Button/Button';
 import styles from './JournalForm.module.css';
 import Input from '../input/input';
+import { UserContext } from '../../context/user.context';
 
 const INITIAL_STATE = {
   title: true,
@@ -15,6 +18,7 @@ const JournalForm = ({ onSubmit }) => {
   const titleRef = useRef();
   const dateRef = useRef();
   const postRef = useRef();
+  const { userId } = useContext(UserContext);
 
   const focusError = (formValidState) => {
     switch (true) {
@@ -45,7 +49,6 @@ const JournalForm = ({ onSubmit }) => {
 
   const addJournalItem = (e) => {
     e.preventDefault();
-    e.target.reset();
     const formData = new FormData(e.target);
     const formProps = Object.fromEntries(formData);
     let isFormValid = true;
@@ -72,10 +75,11 @@ const JournalForm = ({ onSubmit }) => {
       return;
     }
     onSubmit(formProps);
+    e.target.reset();
   };
   return (
     <form className={styles['jounal-form']} onSubmit={addJournalItem}>
-
+      {userId}
       <div>
         <Input
           formValidState={formValidState.title}

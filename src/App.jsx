@@ -1,4 +1,4 @@
-import Button from './components/Button/Button';
+// import Button from './components/Button/Button';
 
 import './App.css';
 import LeftPanel from './layout/LeftPanel/LeftPanel';
@@ -8,6 +8,7 @@ import JournalList from './components/JournalList/JournalList';
 import JournalAddButton from './components/JournalAddButton/JournalAddButton';
 import JournalForm from './components/JournalForm/JournalForm';
 import useLocalStorage from './components/hooks/use-localstorage.hook';
+import { UserContext } from './context/user.context';
 
 function mapItems(items) {
   if (!items) {
@@ -32,16 +33,18 @@ const App = () => {
   };
 
   return (
-    <div className="app">
-      <LeftPanel>
-        <Header />
-        <JournalAddButton />
-        <JournalList items={mapItems(items)} />
-      </LeftPanel>
-      <Body>
-        <JournalForm onSubmit={addItems} />
-      </Body>
-    </div>
+    <UserContext.Provider value={{ userId: 1 }}>
+      <div className="app">
+        <LeftPanel>
+          <Header />
+          <JournalAddButton />
+          <JournalList items={mapItems(items)} />
+        </LeftPanel>
+        <Body>
+          <JournalForm onSubmit={addItems} />
+        </Body>
+      </div>
+    </UserContext.Provider>
   );
 };
 
