@@ -16,35 +16,21 @@ const JournalForm = ({ onSubmit }) => {
   const dateRef = useRef();
   const postRef = useRef();
 
-  // const focusError = (formValidState) => {
-  //   switch (true) {
-  //     case !formValidState.title:
-  //       titleRef.current.focus();
-  //       break;
-  //     case !formValidState.date:
-  //       dateRef.current.focus();
-  //       break;
-  //     case !formValidState.post:
-  //       postRef.current.focus();
-  //       break;
-  //   }
-  // };
   useEffect(() => {
     let timeId;
     if (!formValidState.title || !formValidState.post || !formValidState.date) {
-      // focusError(formValidState);
       timeId = setTimeout(() => {
         setFormValidState(INITIAL_STATE);
-      }, 1000);
-
-      return () => {
-        clearTimeout(timeId);
-      };
+      }, 2000);
     }
-  });
+    return () => {
+      clearTimeout(timeId);
+    };
+  }, [formValidState]);
 
   const addJournalItem = (e) => {
     e.preventDefault();
+    e.target.reset();
     const formData = new FormData(e.target);
     const formProps = Object.fromEntries(formData);
     let isFormValid = true;
@@ -74,6 +60,7 @@ const JournalForm = ({ onSubmit }) => {
   };
   return (
     <form className={styles['jounal-form']} onSubmit={addJournalItem}>
+
       <div>
         <Input
           formValidState={formValidState.title}
@@ -83,11 +70,13 @@ const JournalForm = ({ onSubmit }) => {
           appearance="title"
         />
       </div>
+
       <div className={styles['form-row']}>
         <label htmlFor="date" className={styles['form-label']}>
           <img src="/calendar.svg" alt="Иконка календаря" />
           <span>Дата</span>
         </label>
+
         <Input
           ref={dateRef}
           type="date"
