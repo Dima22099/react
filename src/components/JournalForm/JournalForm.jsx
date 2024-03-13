@@ -16,9 +16,24 @@ const JournalForm = ({ onSubmit }) => {
   const dateRef = useRef();
   const postRef = useRef();
 
+  const focusError = (formValidState) => {
+    switch (true) {
+      case !formValidState.title:
+        titleRef.current.focus();
+        break;
+      case !formValidState.post:
+        postRef.current.focus();
+        break;
+      case !formValidState.date:
+        dateRef.current.focus();
+        break;
+    }
+  };
+
   useEffect(() => {
     let timeId;
     if (!formValidState.title || !formValidState.post || !formValidState.date) {
+      focusError(formValidState);
       timeId = setTimeout(() => {
         setFormValidState(INITIAL_STATE);
       }, 2000);
