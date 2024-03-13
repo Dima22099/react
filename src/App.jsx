@@ -1,6 +1,7 @@
 // import Button from './components/Button/Button';
 
 import './App.css';
+import { useState } from 'react';
 import LeftPanel from './layout/LeftPanel/LeftPanel';
 import Body from './layout/Body/Body';
 import Header from './components/Header/Header';
@@ -22,6 +23,7 @@ function mapItems(items) {
 
 const App = () => {
   const [items, setItems] = useLocalStorage('data');
+  const [userId, setUserId] = useState(2);
 
   const addItems = (item) => {
     setItems([...mapItems(items), {
@@ -33,7 +35,7 @@ const App = () => {
   };
 
   return (
-    <UserContext.Provider value={{ userId: 1 }}>
+    <UserContext.Provider value={{ userId, setUserId }}>
       <div className="app">
         <LeftPanel>
           <Header />
