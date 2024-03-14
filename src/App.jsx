@@ -6,7 +6,7 @@ import JournalList from './components/JournalList/JournalList';
 import JournalAddButton from './components/JournalAddButton/JournalAddButton';
 import JournalForm from './components/JournalForm/JournalForm';
 import useLocalStorage from './components/hooks/use-localstorage.hook';
-import { UserContextProvidev } from './context/user.context';
+import { UserContext, UserContextProvider } from './context/user.context';
 
 function mapItems(items) {
   if (!items) {
@@ -29,7 +29,7 @@ const App = () => {
   };
 
   return (
-    <UserContextProvidev>
+    <UserContextProvider>
       <div className="app">
         <LeftPanel>
           <Header />
@@ -40,7 +40,7 @@ const App = () => {
           <JournalForm onSubmit={addItems} />
         </Body>
       </div>
-    </UserContextProvidev>
+    </UserContextProvider>
   );
 };
 

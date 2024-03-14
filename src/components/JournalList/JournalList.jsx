@@ -5,6 +5,7 @@ import JournalItem from '../JournalItem/JournalItem';
 import { UserContext } from '../../context/user.context';
 
 const JournalList = ({ items }) => {
+  // const { userId } = useContext(UserContext);
   const { userId } = useContext(UserContext);
 
   if (items.length === 0) {

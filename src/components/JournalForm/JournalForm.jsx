@@ -80,6 +80,7 @@ const JournalForm = ({ onSubmit }) => {
   };
   return (
     <form className={styles['jounal-form']} onSubmit={addJournalItem}>
+      { userId}
       <div>
         <Input
           formValidState={formValidState.title}
@@ -123,7 +124,7 @@ const JournalForm = ({ onSubmit }) => {
           [styles.invalid]: !formValidState.post
         })}
       />
-      <Button text="Сохранить" />
+      <Button>Сохранить</Button>
     </form>
   );
 };

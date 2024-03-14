@@ -1,8 +1,8 @@
 import './Button.css';
 import { useState } from 'react';
 
-const Button = ({ text, onClick }) => (
-  <button className="button accent" onClick={onClick}>{text}</button>
+const Button = ({ children, onClick }) => (
+  <button className="button accent" onClick={onClick}>{children}</button>
 );
 
 export default Button;
