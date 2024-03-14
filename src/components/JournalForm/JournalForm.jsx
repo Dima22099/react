@@ -74,12 +74,12 @@ const JournalForm = ({ onSubmit }) => {
     if (!isFormValid) {
       return;
     }
-    onSubmit(formProps);
+
+    onSubmit({ ...formProps, userId });
     e.target.reset();
   };
   return (
     <form className={styles['jounal-form']} onSubmit={addJournalItem}>
-      {userId}
       <div>
         <Input
           formValidState={formValidState.title}
