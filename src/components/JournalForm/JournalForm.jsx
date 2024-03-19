@@ -1,7 +1,11 @@
-import { useEffect, useState } from 'react';
+import {
+  useContext, useEffect, useRef, useState
+} from 'react';
 import cn from 'classnames';
 import Button from '../Button/Button';
 import styles from './JournalForm.module.css';
+import Input from '../input/input';
+import { UserContext } from '../../context/user.context';
 
 const INITIAL_STATE = {
   title: true,
@@ -9,74 +13,124 @@ const INITIAL_STATE = {
   date: true
 };
 
-const JournalForm = ({ onSubmit }) => {
+const JournalForm = ({ onSubmit, data, onDelete }) => {
   const [formValidState, setFormValidState] = useState(INITIAL_STATE);
+  const { userId } = useContext(UserContext);
+
+  const [id, setId] = useState(null);
+  const [input, setInput] = useState('');
+  const [date, setDate] = useState('');
+  const [tag, setTag] = useState('');
+  const [description, setDescrtiption] = useState('');
+
+  const onInput = (e) => setInput(e.target.value);
+  const onDate = (e) => setDate(e.target.value);
+  const onTag = (e) => setTag(e.target.value);
+  const onDescription = (e) => setDescrtiption(e.target.value);
+
+  const focusError = (formValidState) => {
+    // eslint-disable-next-line default-case
+    switch (true) {
+      case !formValidState.title:
+        titleRef.current.focus();
+        break;
+      case !formValidState.post:
+        postRef.current.focus();
+        break;
+      case !formValidState.date:
+        dateRef.current.focus();
+        break;
+    }
+  };
+
+  const clearForm = () => {
+    setId(null);
+    setInput('');
+    setTag('');
+    setDescrtiption('');
+    setDate('');
+  };
 
   useEffect(() => {
-    let timeId;
-    if (!formValidState.title || !formValidState.post || !formValidState.date) {
-      timeId = setTimeout(() => {
-        setFormValidState(INITIAL_STATE);
-      }, 1000);
-
-      return () => {
-        clearTimeout(timeId);
-      };
+    if (!data) {
+      clearForm();
     }
-  });
+
+    if (data) {
+      const {
+        id: postId, title, date, tag, post
+      } = data;
+
+      setId(postId);
+      setInput(title);
+      setDate(date.toISOString().slice(0, 10));
+      setTag(tag);
+      setDescrtiption(post);
+    }
+  }, [data]);
 
   const addJournalItem = (e) => {
     e.preventDefault();
+
     const formData = new FormData(e.target);
     const formProps = Object.fromEntries(formData);
-    let isFormValid = true;
 
-    if (!formProps.title?.trim().length) {
-      setFormValidState((state) => ({ ...state, title: false }));
-      isFormValid = false;
-    } else {
-      setFormValidState((state) => ({ ...state, title: true }));
-    }
-    if (!formProps.post?.trim().length) {
-      setFormValidState((state) => ({ ...state, post: false }));
-      isFormValid = false;
-    } else {
-      setFormValidState((state) => ({ ...state, post: true }));
-    }
-    if (!formProps.date) {
-      setFormValidState((state) => ({ ...state, date: false }));
-      isFormValid = false;
-    } else {
-      setFormValidState((state) => ({ ...state, date: true }));
-    }
-    if (!isFormValid) {
-      return;
-    }
-    onSubmit(formProps);
+    const formState = {
+      title: Boolean(formProps.title?.trim().length),
+      post: Boolean(formProps.post?.trim().length),
+      date: Boolean(formProps.date)
+    };
+
+    const isValid = Object.values(formState).every((value) => value === true);
+    setFormValidState(formState);
+
+    if (!isValid) return;
+
+    onSubmit({
+      id,
+      title: input,
+      date,
+      tag,
+      post: description,
+      userId
+    });
+
+    clearForm();
   };
+
   return (
     <form className={styles['jounal-form']} onSubmit={addJournalItem}>
       <div>
-        <input
+        <Input
+          className={styles.title}
+          formValidState={formValidState.title}
           type="text"
           name="title"
-          className={cn(styles['input-title'], {
-            [styles.invalid]: !formValidState.title
-          })}
+          appearance="title"
+          value={input}
+          onInput={onInput}
         />
+        {id && (
+        <button className={styles.delete} type="button" onClick={() => onDelete(id)}>
+          <img src="/arhiv.svg" alt="Кнопка удалить" />
+        </button>
+        )}
+
       </div>
+
       <div className={styles['form-row']}>
         <label htmlFor="date" className={styles['form-label']}>
           <img src="/calendar.svg" alt="Иконка календаря" />
           <span>Дата</span>
         </label>
-        <input
+
+        <Input
           type="date"
           name="date"
           id="date"
-          className={cn(styles.input, {
-            [styles.invalid]: !formValidState.date
-          })}
+          value={date}
+          formValidState={formValidState.date}
+          onInput={onDate}
         />
       </div>
 
@@ -85,10 +139,12 @@ const JournalForm = ({ onSubmit }) => {
           <img src="/folder.svg" alt="Иконка папка" />
           <span>Метки</span>
         </label>
-        <input type="text" name="tag" id="tag" className={styles.input} />
+        <Input type="text" name="tag" id="tag" value={tag} onInput={onTag} />
       </div>
 
       <textarea
+        onInput={onDescription}
+        value={description}
         name="post"
         id=""
         cols="30"
@@ -97,7 +153,7 @@ const JournalForm = ({ onSubmit }) => {
           [styles.invalid]: !formValidState.post
         })}
       />
-      <Button text="Сохранить" />
+      <Button>Сохранить</Button>
     </form>
   );
 };
