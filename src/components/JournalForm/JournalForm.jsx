@@ -51,6 +51,7 @@ const JournalForm = ({ onSubmit, data, onDelete }) => {
     setDate('');
   };
 
+
   useEffect(() => {
     if (!data) {
       clearForm();
